@@ -1,4 +1,35 @@
-GitHubのリポジトリの更新をローカルに反映させるには、以下の手順を実行します。
+# 使い方
+
+```shell
+ytdl https://www.youtube.com/watch?v=xxxxxxxxxxx
+```
+
+もしくは
+
+```shell
+ytdl https://www.youtube.com/watch?v=xxxxxxxxxxx -f
+//* --fastでもおけ(linuxだと--fastじゃないとエラーが出る)
+```
+
+## 注意点
+
+*--fast*か _-f_ を使った場合はデバイスによっては音声がうまく読み取れないことがあります。
+その場合は VLC などのプレイヤーを使って再生してください。
+
+## 免責事項
+
+このプログラムを使用したことによるいかなる損害も作者は責任を負いません。
+
+## ライブラリの感謝など
+
+このプログラムは以下のライブラリの提供に特に感謝します。
+
+- [youtube_explode_dart](https://pub.dev/packages/youtube_explode_dart)
+- C#でYoutubeExplodeを作成したTyrrrz
+- ライブラリをDartに移植したHexer10（私）
+- [youtube_explode_dart](https://pub.dev/packages/youtube_explode_dart)リポジトリの全ての貢献者
+
+<!-- GitHub のリポジトリの更新をローカルに反映させるには、以下の手順を実行します。
 
 1. **リポジトリのディレクトリに移動**:
    ターミナルまたはコマンドプロンプトを開き、ローカルリポジトリのディレクトリに移動します。
@@ -23,4 +54,4 @@ GitHubのリポジトリの更新をローカルに反映させるには、以�
 
    `main`の部分は、更新したいブランチ名に置き換えてください。
 
-これで、GitHubのリポジトリの更新がローカルに反映されます。
+これで、GitHub のリポジトリの更新がローカルに反映されます。 -->
