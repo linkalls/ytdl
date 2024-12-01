@@ -9,12 +9,11 @@
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'dart:io';
 import 'package:console_bars/console_bars.dart';
-import "dart:convert";
 import "package:args/args.dart";
 
 Future<void> main(List<String> args) async {
   final parser = ArgParser();
-  parser.addFlag("fast");
+  parser.addFlag("fast", abbr: "f", help: "高速モードでダウンロードします");
   final result = parser.parse(args);
   if (result["fast"]) {
     print("高速モードでダウンロードします");
@@ -26,7 +25,6 @@ Future<void> main(List<String> args) async {
   }
   final url = Uri.parse(args[0]);
   final videoId = url.queryParameters['v'];
-  print(videoId);
   if (videoId == null) {
     print('URLが不正です');
     return;
@@ -86,6 +84,18 @@ Future<void> main(List<String> args) async {
   print("これから動画と音声の結合を行います");
 
   var exitCode;
+
+  // ffmpegがインストールされているか確認
+  try {
+    final ffmpegCheck = await Process.run('ffmpeg', ['-version']);
+    if (ffmpegCheck.exitCode != 0) {
+      print('ffmpegがインストールされていません。インストールしてください。');
+      return;
+    }
+  } catch (e) {
+    print('ffmpegがインストールされていません。インストールしてください。');
+    return;
+  }
 
   if (result["fast"]) {
     final process = await Process.run('ffmpeg', [
