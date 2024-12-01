@@ -28,7 +28,7 @@ ytdl https://www.youtube.com/watch?v=xxxxxxxxxxx -f
 
 - [youtube_explode_dart](https://pub.dev/packages/youtube_explode_dart)
 - C#でYoutubeExplodeを作成したTyrrrz
-- ライブラリをDartに移植したHexer10（私）
+- ライブラリをDartに移植したHexer10
 - [youtube_explode_dart](https://pub.dev/packages/youtube_explode_dart)リポジトリの全ての貢献者
 
 <!-- GitHub のリポジトリの更新をローカルに反映させるには、以下の手順を実行します。
