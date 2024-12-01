@@ -6,13 +6,13 @@
 
 // print('Title: ${video.title}');
 // }
-
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'dart:io';
+import 'package:console_bars/console_bars.dart';
 
 Future<void> main(List<String> args) async {
   final yt = YoutubeExplode();
-  if (args == null || args.isEmpty) {
+  if (args.isEmpty) {
     print('URLを指定してください');
     return;
   }
@@ -31,24 +31,52 @@ Future<void> main(List<String> args) async {
 
   final audio = manifest.audioOnly;
   final video = manifest.videoOnly;
-  // print(audio.withHighestBitrate());
 
   final audioStreamInfo = audio.withHighestBitrate();
   final audioStream = yt.videos.streams.get(audioStreamInfo);
 
-  // ファイル名を安全な形式に変換
   final safeTitle = v.title.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_');
-  final audioFile = File("$safeTitle.temp.${audioStreamInfo.container.name}");
-  await audioStream.pipe(audioFile.openWrite());
+  final audioFile = File("$safeTitle.audio.${audioStreamInfo.container.name}");
+  final audioSink = audioFile.openWrite();
+
+  final audioProgress = FillingBar(
+    desc: "音声ダウンロード中",
+    total: audioStreamInfo.size.totalBytes,
+    percentage: true,
+  );
+
+  int audioDownloaded = 0;
+  await for (final data in audioStream) {
+    audioSink.add(data);
+    audioDownloaded += data.length;
+    audioProgress.update(audioDownloaded);
+  }
+  await audioSink.close();
 
   final videoStreamInfo = video.withHighestBitrate();
   final videoStream = yt.videos.streams.get(videoStreamInfo);
-  final videoFile = File('$safeTitle.temp.${videoStreamInfo.container.name}');
-  await videoStream.pipe(videoFile.openWrite());
+  final videoFile = File('$safeTitle.video.${videoStreamInfo.container.name}');
+  final videoSink = videoFile.openWrite();
+
+  final videoProgress = FillingBar(
+    desc: "動画ダウンロード中",
+    total: videoStreamInfo.size.totalBytes,
+    percentage: true,
+  );
+
+  int videoDownloaded = 0;
+  await for (final data in videoStream) {
+    videoSink.add(data);
+    videoDownloaded += data.length;
+    videoProgress.update(videoDownloaded);
+  }
+  await videoSink.close();
 
   yt.close();
 
-  // ffmpegで音声と動画を結合
+  print('\n音声ファイルのパス: ${audioFile.path}');
+  print('動画ファイルのパス: ${videoFile.path}');
+
   final result = await Process.run('ffmpeg', [
     '-i',
     audioFile.path,
@@ -65,9 +93,17 @@ Future<void> main(List<String> args) async {
     print('ファイルの結合に失敗しました: ${result.stderr}');
   }
 
-  // 結合したファイルを削除
-  await audioFile.delete();
-  await videoFile.delete();
+  if (await audioFile.exists()) {
+    await audioFile.delete();
+  } else {
+    print('音声ファイルが見つかりませんでした: ${audioFile.path}');
+  }
+
+  if (await videoFile.exists()) {
+    await videoFile.delete();
+  } else {
+    print('動画ファイルが見つかりませんでした: ${videoFile.path}');
+  }
 }
 
 // はい、コメントの通りです。
