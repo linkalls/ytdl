@@ -9,8 +9,16 @@
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'dart:io';
 import 'package:console_bars/console_bars.dart';
+import "dart:convert";
+import "package:args/args.dart";
 
 Future<void> main(List<String> args) async {
+  final parser = ArgParser();
+  parser.addFlag("fast");
+  final result = parser.parse(args);
+  if (result["fast"]) {
+    print("高速モードでダウンロードします");
+  }
   final yt = YoutubeExplode();
   if (args.isEmpty) {
     print('URLを指定してください');
@@ -77,20 +85,68 @@ Future<void> main(List<String> args) async {
   print('動画ファイルのパス: ${videoFile.path}');
   print("これから動画と音声の結合を行います");
 
-  final result = await Process.run('ffmpeg', [
-    '-i',
-    audioFile.path,
-    '-i',
-    videoFile.path,
-    '-c:a',
-    'aac',
-    '$safeTitle.mp4',
-  ]);
+  var exitCode;
 
-  if (result.exitCode == 0) {
+  if (result["fast"]) {
+    final process = await Process.run('ffmpeg', [
+      '-i',
+      videoFile.path,
+      '-i',
+      audioFile.path,
+      '-shortest',
+      '-c',
+      'copy',
+      '$safeTitle.mp4',
+    ]);
+    exitCode = process.exitCode;
+  } else {
+    final process = await Process.run('ffmpeg', [
+      '-i',
+      videoFile.path,
+      '-i',
+      audioFile.path,
+      '-c:v',
+      'libx264',
+      '-c:a',
+      'aac',
+      '-strict',
+      'experimental',
+      '-b:a',
+      '192k',
+      '-movflags',
+      '+faststart',
+      '-preset',
+      'fast',
+      '$safeTitle.mp4',
+    ]);
+    exitCode = process.exitCode;
+  }
+
+  // final process = await Process.run('ffmpeg', [
+  //   '-i',
+  //   videoFile.path,
+  //   '-i',
+  //   audioFile.path,
+  //   '-shortest',
+  //   '-c',
+  //   'copy',
+  //   '$safeTitle.mp4',
+  // ]);
+
+//* process.startのときは、標準出力をリッスンすることができる
+// print(process.stdout);
+  // process.stdout.transform(utf8.decoder).listen((data) {
+  //   print(data);
+  // });
+
+  // process.stderr.transform(utf8.decoder).listen((data) {
+  //   print(data);
+  // });
+
+  if (exitCode == 0) {
     print('ファイルの結合に成功しました: $safeTitle.mp4');
   } else {
-    print('ファイルの結合に失敗しました: ${result.stderr}');
+    print('ファイルの結合に失敗しました');
   }
 
   if (await audioFile.exists()) {
@@ -105,7 +161,6 @@ Future<void> main(List<String> args) async {
     print('動画ファイルが見つかりませんでした: ${videoFile.path}');
   }
 }
-
 // はい、コメントの通りです。
 //`await stream.pipe(file.openWrite());` は、
 //`stream` のデータを `file` に書き込むためのコードです。

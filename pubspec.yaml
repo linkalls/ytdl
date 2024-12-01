@@ -10,6 +10,7 @@ environment:
 dependencies:
   youtube_explode_dart: ^2.3.6
   console_bars: ^1.2.0
+  args: ^2.6.0
   # path: ^1.8.0
 
 dev_dependencies:
