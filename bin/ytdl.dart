@@ -15,7 +15,7 @@ Future<void> main(List<String> args) async {
   final parser = ArgParser();
   parser.addFlag("fast", abbr: "f", help: "高速モードでダウンロードします");
   final result = parser.parse(args);
-  if (result["fast"]) {
+  if (result["fast"] || result["f"]) {
     print("高速モードでダウンロードします");
   }
   final yt = YoutubeExplode();
@@ -97,7 +97,7 @@ Future<void> main(List<String> args) async {
     return;
   }
 
-  if (result["fast"]) {
+  if (result["fast"] || result["f"]) {
     final process = await Process.run('ffmpeg', [
       '-i',
       videoFile.path,
