@@ -1,5 +1,7 @@
 # 使い方
 
+適当な環境パスに入れておくことを強く推奨します。
+
 ```shell
 ytdl https://www.youtube.com/watch?v=xxxxxxxxxxx
 ```
