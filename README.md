@@ -1,2 +1,26 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
+GitHubのリポジトリの更新をローカルに反映させるには、以下の手順を実行します。
+
+1. **リポジトリのディレクトリに移動**:
+   ターミナルまたはコマンドプロンプトを開き、ローカルリポジトリのディレクトリに移動します。
+
+   ```sh
+   cd path/to/your/repository
+   ```
+
+2. **リモートリポジトリから最新の変更を取得**:
+   `git fetch`コマンドを使用して、リモートリポジトリから最新の変更を取得します。
+
+   ```sh
+   git fetch origin
+   ```
+
+3. **ローカルブランチを更新**:
+   `git pull`コマンドを使用して、ローカルブランチをリモートブランチの最新の状態に更新します。
+
+   ```sh
+   git pull origin main
+   ```
+
+   `main`の部分は、更新したいブランチ名に置き換えてください。
+
+これで、GitHubのリポジトリの更新がローカルに反映されます。
