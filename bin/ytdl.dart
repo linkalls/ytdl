@@ -24,8 +24,7 @@ Future<void> main(List<String> args) async {
     return;
   }
   final v = await yt.videos.get(videoId);
-  final manifest =
-      await yt.videos.streams.getManifest(videoId, ytClients: [
+  final manifest = await yt.videos.streams.getManifest(videoId, ytClients: [
     YoutubeApiClient.android,
   ]);
 
@@ -76,6 +75,7 @@ Future<void> main(List<String> args) async {
 
   print('\n音声ファイルのパス: ${audioFile.path}');
   print('動画ファイルのパス: ${videoFile.path}');
+  print("これから動画と音声の結合を行います");
 
   final result = await Process.run('ffmpeg', [
     '-i',
